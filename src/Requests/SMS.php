@@ -26,6 +26,13 @@ class SMS extends SMSClient
      */
     protected $email;
 
+	/**
+     * The merchant code assigned for the application on SMS API.
+     *
+     * @var string
+     */
+    protected $senderId;
+
     /**
      * Balance constructor.
      */
@@ -35,7 +42,7 @@ class SMS extends SMSClient
 		
 		$this->email = config('vas.email');
 		
-		$this->sender_id = config('vas.sender_id');		   
+		$this->senderId = config('vas.sender_id');		   
 		
     }
 
@@ -68,9 +75,11 @@ class SMS extends SMSClient
       	@param string offercode
 		
      */
-    public function subscribe($mobileNumber, $offerCode)
+    public function subscribe($requestId = NULL, $mobileNumber, $offerCode)
     {
-		$requestId = (string) Str::uuid();
+		if(is_null($requestId)){
+			$requestId = (string) Str::uuid();
+		}
 		
         $parameters = [
             "email" => $this->email,
@@ -135,7 +144,7 @@ class SMS extends SMSClient
 		
         $parameters = [
             "email" => $this->email,
-            "sender" => $this->sender_id,
+            "sender" => $this->senderId,
             "schedule" => date("Y-m-d H:i:s"),
             "sms" => [
 						[

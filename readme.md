@@ -15,17 +15,30 @@ Via Composer
 composer require edlugz/vas
 ```
 
+Fill in all the details you will be requiring for your application. Here are the env variables for quick copy paste.
+
+```bash
+VAS_API_KEY
+VAS_REGISTERED_EMAIL
+VAS_SENDER_ID
+```
+
 ## Usage
+
+Using the facade
+
+Check balance
+```bash
+VAS::SMS()->balance();
+```
+Send Message
+```bash
+VAS::SMS()->send($requestId = null, $mobileNumber, $message);
+```
 
 ## Change log
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.
-
-## Testing
-
-```bash
-composer test
-```
 
 ## Contributing
 
