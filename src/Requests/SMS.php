@@ -33,8 +33,9 @@ class SMS extends SMSClient
     {
         parent::__construct();
 		
-		$this->email = config('sms.email');
-		   
+		$this->email = config('vas.email');
+		
+		$this->sender_id = config('vas.sender_id');		   
 		
     }
 
@@ -134,7 +135,7 @@ class SMS extends SMSClient
 		
         $parameters = [
             "email" => $this->email,
-            "sender" => "PAYSTRO",
+            "sender" => $this->sender_id,
             "schedule" => date("Y-m-d H:i:s"),
             "sms" => [
 						[

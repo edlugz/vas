@@ -29,7 +29,7 @@ class SMSClient
      *
      * @var array
      */
-   // protected $base_url = 'https://vas2.standardmedia.co.ke/api/';
+   
     protected $base_url = 'https://reseller.standardmedia.co.ke/api/';
 
     /**
@@ -45,12 +45,12 @@ class SMSClient
             'base_uri' => $this->base_url
         ];
 
-        if (config('sms.logs.enabled')) {
+        if (config('vas.logs.enabled')) {
             $options = Log::enable($options);
         }
 
         $this->client = new Client($options);
-        $this->apiKey = config('sms.api_key');
+        $this->apiKey = config('vas.api_key');
     }
 
     /**
@@ -59,11 +59,14 @@ class SMSClient
     protected function validateConfigurations()
     {
         // Validate keys
-        if (empty(config('sms.api_key'))) {
+        if (empty(config('vas.api_key'))) {
             throw new \InvalidArgumentException('api key has not been set.');
         }
-        if (empty(config('sms.email'))) {
+        if (empty(config('vas.email'))) {
             throw new \InvalidArgumentException('registered email has not been set');
+        }
+        if (empty(config('vas.sender_id'))) {
+            throw new \InvalidArgumentException('sender id has not been set');
         }
     }
 
