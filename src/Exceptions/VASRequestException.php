@@ -6,5 +6,5 @@ use Exception;
 
 class VASRequestException extends Exception
 {
-	//
+    //
 }

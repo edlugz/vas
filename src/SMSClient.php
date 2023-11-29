@@ -2,11 +2,10 @@
 
 namespace EdLugz\VAS;
 
+use EdLugz\VAS\Logging\Log;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
-use EdLugz\VAS\Exceptions\VASRequestException;
-use EdLugz\VAS\Logging\Log;
 
 class SMSClient
 {
@@ -29,7 +28,6 @@ class SMSClient
      *
      * @var array
      */
-   
     protected $base_url = 'https://reseller.standardmedia.co.ke/api/';
 
     /**
@@ -42,7 +40,7 @@ class SMSClient
         $this->validateConfigurations();
 
         $options = [
-            'base_uri' => $this->base_url
+            'base_uri' => $this->base_url,
         ];
 
         if (config('vas.logs.enabled')) {
@@ -74,10 +72,12 @@ class SMSClient
      * Make API calls to SMS APIs.
      *
      * @param string $url
-     * @param array $options
+     * @param array  $options
      * @param string $method
-     * @return mixed
+     *
      * @throws SMSRequestException
+     *
+     * @return mixed
      */
     protected function call($url, $options = [], $method = 'POST')
     {
@@ -95,14 +95,17 @@ class SMSClient
             $response = json_decode($e->getResponse()->getBody()->getContents());
             if (isset($response->Envelope)) {
                 $message = 'SMS APIs: '.$response->Envelope->Body->Fault->faultstring;
+
                 throw new SMSRequestException($message, $e->getCode());
             }
+
             throw new SMSRequestException('SMS APIs: '.$response->errorMessage, $e->getCode());
         } catch (ClientException $e) {
-			
-			echo $e; exit();
-			
+            echo $e;
+            exit;
+
             $response = json_decode($e->getResponse()->getBody()->getContents());
+
             throw new SMSRequestException('SMS APIs: '
                 .$response->errorMessage, $e->getCode());
         }
