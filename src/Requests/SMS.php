@@ -133,9 +133,11 @@ class SMS extends SMSClient
      * requestid : (string) Unique identifier of the message
      * @param datetime schedule
      */
-    public function send($mobileNumber, $message)
+    public function send($mobileNumber, $message, $requestId = null)
     {
-        $requestId = (string) Str::uuid();
+        if (is_null($requestId)) {
+            $requestId = (string) Str::uuid();
+        }
 
         $parameters = [
             'email'    => $this->email,
