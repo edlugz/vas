@@ -66,7 +66,7 @@ return [
 
     'logs' => [
         'enabled' => true,
-        'level'   => 'DEBUG',
+        'level'   => env('VAS_LOG_LEVEL','DEBUG'),
     ],
 
 ];
