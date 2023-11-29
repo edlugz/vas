@@ -66,7 +66,7 @@ class Log
      */
     protected static function getLogLevel()
     {
-        $level = strtoupper(config('sms.logs.level'));
+        $level = strtoupper(config('vas.logs.level'));
 
         if (array_key_exists($level, self::$levels)) {
             return self::$levels[$level];
