@@ -35,7 +35,7 @@ class VASServiceProvider extends ServiceProvider
 
         // Register the service the package provides.
         $this->app->singleton('vas', function ($app) {
-            return new VAS;
+            return new VAS();
         });
     }
 
