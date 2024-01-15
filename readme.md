@@ -33,7 +33,7 @@ VAS::SMS()->balance();
 ```
 Send Message
 ```bash
-VAS::SMS()->send($requestId = null, $mobileNumber, $message);
+VAS::SMS()->send($mobileNumber, $message, $requestId = null);
 ```
 
 ## Change log
