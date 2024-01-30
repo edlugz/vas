@@ -32,10 +32,10 @@ class Log
      *
      * @param $options
      *
-     * @return int
+     * @return array
      * @throws Exception
      */
-    public static function enable($options): int
+    public static function enable($options): array
     {
         $level = self::getLogLevel();
 
