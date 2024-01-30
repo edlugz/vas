@@ -12,11 +12,16 @@ use Illuminate\Support\ServiceProvider;
 class VASServiceProvider extends ServiceProvider
 {
     /**
+     * Package path to config.
+     */
+    const CONFIG_PATH = __DIR__.'/../config/vas.php';
+
+    /**
      * Perform post-registration booting of services.
      *
      * @return void
      */
-    public function boot(): void
+    public function boot()
     {
         $this->publishes([
             self::CONFIG_PATH => config_path('vas.php'),
