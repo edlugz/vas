@@ -3,38 +3,41 @@
 namespace EdLugz\VAS\Requests;
 
 use EdLugz\VAS\SMSClient;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use EdLugz\Models\VasSms;
 
 class SMS extends SMSClient
 {
     /**
-     * check merchant balance end point on SMS API.
+     * end points on SMS API.
      *
      * @var string
      */
-    protected $sendEndPoint = 'sendmessages';
-    protected $balanceEndPoint = 'getbalance';
-    protected $subscribeEndPoint = 'subscribeuser';
-    protected $sendSubscriptionEndPoint = 'SendMT';
-    protected $replyEndPoint = 'ReplySMS';
+    protected string $sendEndPoint = 'sendmessages';
+    protected string $balanceEndPoint = 'getbalance';
+    protected string $subscribeEndPoint = 'subscribeuser';
+    protected string $sendSubscriptionEndPoint = 'SendMT';
+    protected string $replyEndPoint = 'ReplySMS';
 
     /**
-     * The merchant code assigned for the application on SMS API.
+     * The registered email assigned for the application on SMS API.
      *
      * @var string
      */
-    protected $email;
+    protected string $email;
 
     /**
-     * The merchant code assigned for the application on SMS API.
+     * The sender ID assigned for the application on SMS API.
      *
      * @var string
      */
-    protected $senderId;
+    protected string $senderId;
 
     /**
      * Balance constructor.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -47,32 +50,33 @@ class SMS extends SMSClient
 
     /**
      * Check sms credits balance.
-     *
-     * @param string email
+     * return int
      */
-    public function balance()
+    public function balance() : int
     {
         $parameters = [
             'email' => $this->email,
         ];
 
-        Log::info($parameters);
-
         $response = $this->call($this->balanceEndPoint, ['json' => $parameters], 'GET');
 
-        Log::info(json_encode($response));
+        if (!empty($response->MainAccountCredits[0])) {
+            return $response->MainAccountCredits[0]->Balance;
+        }
 
-        return $response;
+        return 0;
+
     }
 
     /**
      * Subscribe User to service.
      *
-     * @param string email
-     * @param string telephone
-     * @param string offercode
+     * @param string $mobileNumber
+     * @param string $offerCode
+     * @param null $requestId
+     * @return mixed
      */
-    public function subscribe($requestId = null, $mobileNumber, $offerCode)
+    public function subscribe(string $mobileNumber, string $offerCode, $requestId = null): mixed
     {
         if (is_null($requestId)) {
             $requestId = (string) Str::uuid();
@@ -96,15 +100,10 @@ class SMS extends SMSClient
     /**
      * Send Subscription Messages (MT).
      *
-     * @param string email
-     * @param string sender
-     * @param array messages
-     * telephone :	(string) the message recipient beggining with 254...
-     * text : message body
-     * offercode :	sending code - service in which user is subscribed
-     * @param datetime schedule
+     * @param array $messages
+     * return mixed
      */
-    public function subscriptionMessages($messages)
+    public function subscriptionMessages(array $messages): mixed
     {
         $requestId = (string) Str::uuid();
 
@@ -122,18 +121,14 @@ class SMS extends SMSClient
         return $response;
     }
 
+
     /**
-     * Send sms.
-     *
-     * @param string email
-     * @param string sender
-     * @param array sms
-     * msidn : (string) The message recipient(s) begining with 07...
-     * message : (string) Message to be sent to the recipient(s)
-     * requestid : (string) Unique identifier of the message
-     * @param datetime schedule
+     * @param $mobileNumber
+     * @param $message
+     * @param $requestId
+     * @return mixed
      */
-    public function send($mobileNumber, $message, $requestId = null)
+    public function send($mobileNumber, $message, $requestId = null) : mixed
     {
         if (is_null($requestId)) {
             $requestId = (string) Str::uuid();
@@ -152,25 +147,20 @@ class SMS extends SMSClient
             ],
         ];
 
-        Log::info($parameters);
-
         $response = $this->call($this->sendEndPoint, ['json' => $parameters]);
-
-        Log::info(json_encode($response));
 
         return $response;
     }
 
+
     /**
-     * Reply MO Messages.
-     *
-     * @param string email
-     * @param string telephone
-     * @param string offercode
-     * @param stgring message
-     * @param stgring linkid
+     * @param $mobileNumber
+     * @param $linkId
+     * @param $message
+     * @param $offerCode
+     * @return mixed
      */
-    public function reply($mobileNumber, $linkId, $message, $offerCode)
+    public function reply($mobileNumber, $linkId, $message, $offerCode): mixed
     {
         $parameters = [
             'email'     => $this->email,
@@ -189,26 +179,63 @@ class SMS extends SMSClient
         return $response;
     }
 
+
     /**
-     * Receive MO Messages in your Application ( via Callback ).
-     *
-     * @param string shortcode
-     * @param string linkid
-     * @param string offercode
-     * @param stgring msisdn
-     * @param stgring message
-     * @param stgring timein
+     * @param $data
+     * @return void
      */
-    public function receive($data)
+    public function receive($data): void
     {
         Log::info($data);
 
         //save to db
-        $data->shortcode;
-        $data->linkid;
-        $data->offercode;
-        $data->msisdn;
-        $data->message;
-        $data->timein;
+        //$data->shortcode;
+        //$data->linkid;
+        //$data->offercode;
+        //$data->msisdn;
+        //$data->message;
+        //$data->timein;
+    }
+
+    /**
+     * @param Request $request
+     * @return VasSms
+     */
+    public function smsReport(Request $request) : VasSms
+    {
+        $msisdn = $cp_id = $correlator_id = $description = $delivery_status = $type = $campaign_id = null;
+
+        if($request->input('requestParam')){
+            $params = $request->input('resultParameters');
+            $keyValueParams = [];
+            foreach ($params as $param) {
+                $keyValueParams[$param['id']] = $param['value'];
+            }
+
+            $msisdn = $keyValueParams['Msisdn'];
+            $cp_id = $keyValueParams['CpId'];
+            $correlator_id = $keyValueParams['correlatorId'];
+            $description = $keyValueParams['Description'];
+            $delivery_status = $keyValueParams['deliveryStatus'];
+            $type = $keyValueParams['Type'];
+            $campaign_id = $keyValueParams['campaignId'];
+        }
+
+        return VasSms::create(
+        [
+            'requestId' => $request->input('requestId'),
+            'requestTimeStamp' => $request->input('requestTimeStamp'),
+            'channel' => $request->input('channel'),
+            'operation' => $request->input('operation'),
+            'traceID' => $request->input('traceID'),
+            'msisdn' => $msisdn,
+            'cp_id' => $cp_id,
+            'correlator_id' => $correlator_id,
+            'description' => $description,
+            'delivery_status' => $delivery_status,
+            'type' => $type,
+            'campaign_id' => $campaign_id,
+            'json_result' => json_encode($request->all()),
+        ]);
     }
 }

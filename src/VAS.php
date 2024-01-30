@@ -11,7 +11,7 @@ class VAS
      *
      * @return Sms
      */
-    public function sms()
+    public function sms(): SMS
     {
         return new SMS();
     }

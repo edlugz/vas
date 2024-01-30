@@ -4,6 +4,11 @@ namespace EdLugz\VAS;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * @method publishes(array $array, string $string)
+ * @method mergeConfigFrom(string $string, string $string1)
+ * @property $app
+ */
 class VASServiceProvider extends ServiceProvider
 {
     /**
@@ -13,12 +18,14 @@ class VASServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'edlugz');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'edlugz');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->publishes([
+            self::CONFIG_PATH => config_path('vas.php'),
+        ], 'config');
 
-        // Publishing is only necessary when using the CLI.
+        $this->publishes([
+            __DIR__.'/../databases/migrations/' => database_path('migrations'),
+        ], 'migrations');
+
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
@@ -44,7 +51,7 @@ class VASServiceProvider extends ServiceProvider
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return ['vas'];
     }
@@ -60,23 +67,5 @@ class VASServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/vas.php' => config_path('vas.php'),
         ], 'vas.config');
-
-        // Publishing the views.
-        /*$this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/edlugz'),
-        ], 'vas.views');*/
-
-        // Publishing assets.
-        /*$this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/edlugz'),
-        ], 'vas.assets');*/
-
-        // Publishing the translation files.
-        /*$this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/edlugz'),
-        ], 'vas.lang');*/
-
-        // Registering package commands.
-        // $this->commands([]);
     }
 }

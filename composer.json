@@ -22,11 +22,6 @@
             "EdLugz\\VAS\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "EdLugz\\VAS\\Tests\\": "tests"
-        }
-    },
     "extra": {
         "laravel": {
             "providers": [

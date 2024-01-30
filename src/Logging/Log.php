@@ -2,6 +2,7 @@
 
 namespace EdLugz\VAS\Logging;
 
+use Exception;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
@@ -15,7 +16,7 @@ class Log
      *
      * @var array
      */
-    protected static $levels = [
+    protected static array $levels = [
         'DEBUG'     => Logger::DEBUG,
         'INFO'      => Logger::INFO,
         'NOTICE'    => Logger::NOTICE,
@@ -32,8 +33,9 @@ class Log
      * @param $options
      *
      * @return int
+     * @throws Exception
      */
-    public static function enable($options)
+    public static function enable($options): int
     {
         $level = self::getLogLevel();
 
@@ -60,11 +62,11 @@ class Log
     /**
      * Determine the log level specified in the configurations.
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return mixed
      */
-    protected static function getLogLevel()
+    protected static function getLogLevel(): mixed
     {
         $level = strtoupper(config('vas.logs.level'));
 
@@ -72,6 +74,6 @@ class Log
             return self::$levels[$level];
         }
 
-        throw new \Exception('Debug level not recognized');
+        throw new Exception('Debug level not recognized');
     }
 }
