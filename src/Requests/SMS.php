@@ -3,10 +3,11 @@
 namespace EdLugz\VAS\Requests;
 
 use EdLugz\VAS\SMSClient;
-use Exception;
+use EdLugz\VAS\Models\VasSms;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use EdLugz\Models\VasSms;
+use Illuminate\Http\Request;
+use Exception;
 
 class SMS extends SMSClient
 {
@@ -206,10 +207,11 @@ class SMS extends SMSClient
         $msisdn = $cp_id = $correlator_id = $description = $delivery_status = $type = $campaign_id = null;
 
         if($request->input('requestParam')){
-            $params = $request->input('resultParameters');
+            $params = $request->input('requestParam')['data'];
             $keyValueParams = [];
+
             foreach ($params as $param) {
-                $keyValueParams[$param['id']] = $param['value'];
+                $keyValueParams[$param['name']] = $param['value'];
             }
 
             $msisdn = $keyValueParams['Msisdn'];
