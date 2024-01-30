@@ -4,28 +4,19 @@ namespace EdLugz\VAS;
 
 use Illuminate\Support\ServiceProvider;
 
-/**
- * @method publishes(array $array, string $string)
- * @method mergeConfigFrom(string $string, string $string1)
- * @property $app
- */
 class VASServiceProvider extends ServiceProvider
 {
-    /**
-     * Package path to config.
-     */
-    const CONFIG_PATH = __DIR__.'/../config/vas.php';
-
+	
     /**
      * Perform post-registration booting of services.
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
-            self::CONFIG_PATH => config_path('vas.php'),
-        ], 'config');
+            __DIR__.'/../config/vas.php' => config_path('vas.php'),
+        ], 'vas.config');
 
         $this->publishes([
             __DIR__.'/../databases/migrations/' => database_path('migrations'),
