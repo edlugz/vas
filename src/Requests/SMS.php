@@ -124,16 +124,14 @@ class SMS extends SMSClient
 
 
     /**
-     * @param $mobileNumber
-     * @param $message
-     * @param $requestId
+     * @param string $mobileNumber
+     * @param string $message
+     * @param array $customFieldsKeyValue
      * @return mixed
      */
-    public function send($mobileNumber, $message, $requestId = null) : mixed
+    public function send(string $mobileNumber, string $message, array $customFieldsKeyValue = []) : mixed
     {
-        if (is_null($requestId)) {
-            $requestId = (string) Str::uuid();
-        }
+       $requestId = (string) Str::uuid();
 
         $parameters = [
             'email'    => $this->email,
@@ -150,10 +148,10 @@ class SMS extends SMSClient
 
         /* @var $sms VasSms */
 
-        $sms = VasSms::create([
+        $sms = VasSms::create(array_merge([
             'reference_id' => $requestId,
             'json_request' => json_encode($parameters),
-        ]);
+        ], $customFieldsKeyValue));
 
         $response = $this->call($this->sendEndPoint, ['json' => $parameters]);
 
