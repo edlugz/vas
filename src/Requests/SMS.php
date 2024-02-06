@@ -148,7 +148,16 @@ class SMS extends SMSClient
             ],
         ];
 
+        /* @var $sms VasSms */
+
+        $sms = VasSms::create([
+            'reference_id' => $requestId,
+            'json_request' => json_encode($parameters),
+        ]);
+
         $response = $this->call($this->sendEndPoint, ['json' => $parameters]);
+
+        $sms->update(['response' => $response]);
 
         return $response;
     }
@@ -223,21 +232,42 @@ class SMS extends SMSClient
             $campaign_id = $keyValueParams['campaignId'];
         }
 
+        $sms = VasSms::where('reference_id', substr($request->input('requestId'), 4))->first();
+
+        if($sms) {
+            return $sms->update(
+                [
+                    'requestId' => $request->input('requestId'),
+                    'requestTimeStamp' => $request->input('requestTimeStamp'),
+                    'channel' => $request->input('channel'),
+                    'operation' => $request->input('operation'),
+                    'traceID' => $request->input('traceID'),
+                    'msisdn' => $msisdn,
+                    'cp_id' => $cp_id,
+                    'correlator_id' => $correlator_id,
+                    'description' => $description,
+                    'delivery_status' => $delivery_status,
+                    'type' => $type,
+                    'campaign_id' => $campaign_id,
+                    'json_result' => json_encode($request->all()),
+                ]);
+        }
+
         return VasSms::create(
-        [
-            'requestId' => $request->input('requestId'),
-            'requestTimeStamp' => $request->input('requestTimeStamp'),
-            'channel' => $request->input('channel'),
-            'operation' => $request->input('operation'),
-            'traceID' => $request->input('traceID'),
-            'msisdn' => $msisdn,
-            'cp_id' => $cp_id,
-            'correlator_id' => $correlator_id,
-            'description' => $description,
-            'delivery_status' => $delivery_status,
-            'type' => $type,
-            'campaign_id' => $campaign_id,
-            'json_result' => json_encode($request->all()),
-        ]);
+            [
+                'requestId' => $request->input('requestId'),
+                'requestTimeStamp' => $request->input('requestTimeStamp'),
+                'channel' => $request->input('channel'),
+                'operation' => $request->input('operation'),
+                'traceID' => $request->input('traceID'),
+                'msisdn' => $msisdn,
+                'cp_id' => $cp_id,
+                'correlator_id' => $correlator_id,
+                'description' => $description,
+                'delivery_status' => $delivery_status,
+                'type' => $type,
+                'campaign_id' => $campaign_id,
+                'json_result' => json_encode($request->all()),
+            ]);
     }
 }
