@@ -127,9 +127,9 @@ class SMS extends SMSClient
      * @param string $mobileNumber
      * @param string $message
      * @param array $customFieldsKeyValue
-     * @return mixed
+     * @return VasSms
      */
-    public function send(string $mobileNumber, string $message, array $customFieldsKeyValue = []) : mixed
+    public function send(string $mobileNumber, string $message, array $customFieldsKeyValue = []) : VasSms
     {
        $requestId = (string) Str::uuid();
 
@@ -157,7 +157,7 @@ class SMS extends SMSClient
 
         $sms->update(['response' => $response]);
 
-        return $response;
+        return $sms;
     }
 
 
