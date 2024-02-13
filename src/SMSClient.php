@@ -2,6 +2,7 @@
 
 namespace EdLugz\VAS;
 
+use EdLugz\VAS\Exceptions\VASRequestException;
 use EdLugz\VAS\Logging\Log;
 use Exception;
 use GuzzleHttp\Client;
@@ -79,7 +80,7 @@ class SMSClient
      * @param string $method
      *
      * @return mixed
-     *@throws SMSRequestException
+     * @throws VASRequestException
      *
      */
     protected function call(string $url, array $options = [], string $method = 'POST'): mixed
@@ -97,15 +98,15 @@ class SMSClient
         } catch (ServerException $e) {
             $response = json_decode($e->getResponse()->getBody()->getContents());
             if (isset($response->Envelope)) {
-                $message = 'SMS APIs: '.$response->Envelope->Body->Fault->faultstring;
+                $message = 'VAS SMS APIs: '.$response->Envelope->Body->Fault->faultstring;
 
-                throw new SMSRequestException($message, $e->getCode());
+                throw new VASRequestException($message, $e->getCode());
             }
 
-            throw new SMSRequestException('SMS APIs: '.$response->errorMessage, $e->getCode());
+            throw new VASRequestException(' VAS SMS APIs: '.$response->errorMessage, $e->getCode());
         } catch (ClientException $e) {
            $response = json_decode($e->getResponse()->getBody()->getContents());
-           throw new SMSRequestException('SMS APIs: '.$response->errorMessage, $e->getCode());
+           throw new VASRequestException('VAS SMS APIs: '.$response->errorMessage, $e->getCode());
         }
     }
 }
