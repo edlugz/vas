@@ -76,6 +76,7 @@ class SMS extends SMSClient
      * @param string $offerCode
      * @param null $requestId
      * @return mixed
+     * @throws \EdLugz\VAS\Exceptions\VASRequestException
      */
     public function subscribe(string $mobileNumber, string $offerCode, $requestId = null): mixed
     {
@@ -103,6 +104,7 @@ class SMS extends SMSClient
      *
      * @param array $messages
      * return mixed
+     * @throws \EdLugz\VAS\Exceptions\VASRequestException
      */
     public function subscriptionMessages(array $messages): mixed
     {
@@ -127,8 +129,9 @@ class SMS extends SMSClient
      * @param string $mobileNumber
      * @param string $message
      * @param array $customFieldsKeyValue
-     * @param string $requestId
+     * @param string|null $requestId
      * @return VasSms
+     * @throws \EdLugz\VAS\Exceptions\VASRequestException
      */
     public function send(string $mobileNumber, string $message, array $customFieldsKeyValue = [], string $requestId = null) : VasSms
     {
@@ -168,6 +171,7 @@ class SMS extends SMSClient
      * @param $message
      * @param $offerCode
      * @return mixed
+     * @throws \EdLugz\VAS\Exceptions\VASRequestException
      */
     public function reply($mobileNumber, $linkId, $message, $offerCode): mixed
     {

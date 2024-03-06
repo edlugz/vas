@@ -15,6 +15,12 @@ Via Composer
 composer require edlugz/vas
 ```
 
+## Publish Migration Files
+
+```bash
+php artisan vendor:publish --provider="EdLugz\VAS\VASServiceProvider" --tag="migrations"
+```
+
 Fill in all the details you will be requiring for your application. Here are the env variables for quick copy paste.
 
 ```bash
