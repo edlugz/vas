@@ -127,9 +127,10 @@ class SMS extends SMSClient
      * @param string $mobileNumber
      * @param string $message
      * @param array $customFieldsKeyValue
+     * @param string $requestId
      * @return VasSms
      */
-    public function send(string $mobileNumber, string $message, array $customFieldsKeyValue = []) : VasSms
+    public function send(string $mobileNumber, string $message, array $customFieldsKeyValue = [], string $requestId = null) : VasSms
     {
        $requestId = (string) Str::uuid();
 
