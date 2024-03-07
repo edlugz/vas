@@ -5,7 +5,7 @@
 [![Build Status][ico-travis]][link-travis]
 [![StyleCI][ico-styleci]][link-styleci]
 
-This is where your description should go. Take a look at [contributing.md](contributing.md) to see a to do list.
+This package provides you with a simple tool to make requests to VAS APIs so that you can focus on the development of your awesome applications instead of all the set up involved.
 
 ## Installation
 
