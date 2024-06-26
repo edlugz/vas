@@ -2,12 +2,12 @@
 
 namespace EdLugz\VAS\Requests;
 
-use EdLugz\VAS\SMSClient;
 use EdLugz\VAS\Models\VasSms;
+use EdLugz\VAS\SMSClient;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Exception;
 
 class SMS extends SMSClient
 {
@@ -38,6 +38,7 @@ class SMS extends SMSClient
 
     /**
      * Balance constructor.
+     *
      * @throws Exception
      */
     public function __construct()
@@ -51,9 +52,9 @@ class SMS extends SMSClient
 
     /**
      * Check sms credits balance.
-     * return int
+     * return int.
      */
-    public function balance() : int
+    public function balance(): int
     {
         $parameters = [
             'email' => $this->email,
@@ -66,7 +67,6 @@ class SMS extends SMSClient
         }
 
         return 0;
-
     }
 
     /**
@@ -74,9 +74,11 @@ class SMS extends SMSClient
      *
      * @param string $mobileNumber
      * @param string $offerCode
-     * @param null $requestId
-     * @return mixed
+     * @param null   $requestId
+     *
      * @throws \EdLugz\VAS\Exceptions\VASRequestException
+     *
+     * @return mixed
      */
     public function subscribe(string $mobileNumber, string $offerCode, $requestId = null): mixed
     {
@@ -103,7 +105,8 @@ class SMS extends SMSClient
      * Send Subscription Messages (MT).
      *
      * @param array $messages
-     * return mixed
+     *                        return mixed
+     *
      * @throws \EdLugz\VAS\Exceptions\VASRequestException
      */
     public function subscriptionMessages(array $messages): mixed
@@ -124,18 +127,19 @@ class SMS extends SMSClient
         return $response;
     }
 
-
     /**
-     * @param string $mobileNumber
-     * @param string $message
-     * @param array $customFieldsKeyValue
+     * @param string      $mobileNumber
+     * @param string      $message
+     * @param array       $customFieldsKeyValue
      * @param string|null $requestId
-     * @return VasSms
+     *
      * @throws \EdLugz\VAS\Exceptions\VASRequestException
+     *
+     * @return VasSms
      */
-    public function send(string $mobileNumber, string $message, array $customFieldsKeyValue = [], string $requestId = null) : VasSms
+    public function send(string $mobileNumber, string $message, array $customFieldsKeyValue = [], string $requestId = null): VasSms
     {
-       $requestId = (string) Str::uuid();
+        $requestId = (string) Str::uuid();
 
         $parameters = [
             'email'    => $this->email,
@@ -164,14 +168,15 @@ class SMS extends SMSClient
         return $sms;
     }
 
-
     /**
      * @param $mobileNumber
      * @param $linkId
      * @param $message
      * @param $offerCode
-     * @return mixed
+     *
      * @throws \EdLugz\VAS\Exceptions\VASRequestException
+     *
+     * @return mixed
      */
     public function reply($mobileNumber, $linkId, $message, $offerCode): mixed
     {
@@ -192,9 +197,9 @@ class SMS extends SMSClient
         return $response;
     }
 
-
     /**
      * @param $data
+     *
      * @return void
      */
     public function receive($data): void
@@ -212,13 +217,14 @@ class SMS extends SMSClient
 
     /**
      * @param Request $request
+     *
      * @return VasSms
      */
-    public function smsReport(Request $request) : VasSms
+    public function smsReport(Request $request): VasSms
     {
         $msisdn = $cp_id = $correlator_id = $description = $delivery_status = $type = $campaign_id = null;
 
-        if($request->input('requestParam')){
+        if ($request->input('requestParam')) {
             $params = $request->input('requestParam')['data'];
             $keyValueParams = [];
 
@@ -237,40 +243,42 @@ class SMS extends SMSClient
 
         $sms = VasSms::where('reference_id', substr($request->input('requestId'), 4))->first();
 
-        if($sms) {
+        if ($sms) {
             return $sms->update(
                 [
-                    'requestId' => $request->input('requestId'),
+                    'requestId'        => $request->input('requestId'),
                     'requestTimeStamp' => $request->input('requestTimeStamp'),
-                    'channel' => $request->input('channel'),
-                    'operation' => $request->input('operation'),
-                    'traceID' => $request->input('traceID'),
-                    'msisdn' => $msisdn,
-                    'cp_id' => $cp_id,
-                    'correlator_id' => $correlator_id,
-                    'description' => $description,
-                    'delivery_status' => $delivery_status,
-                    'type' => $type,
-                    'campaign_id' => $campaign_id,
-                    'json_result' => json_encode($request->all()),
-                ]);
+                    'channel'          => $request->input('channel'),
+                    'operation'        => $request->input('operation'),
+                    'traceID'          => $request->input('traceID'),
+                    'msisdn'           => $msisdn,
+                    'cp_id'            => $cp_id,
+                    'correlator_id'    => $correlator_id,
+                    'description'      => $description,
+                    'delivery_status'  => $delivery_status,
+                    'type'             => $type,
+                    'campaign_id'      => $campaign_id,
+                    'json_result'      => json_encode($request->all()),
+                ]
+            );
         }
 
         return VasSms::create(
             [
-                'requestId' => $request->input('requestId'),
+                'requestId'        => $request->input('requestId'),
                 'requestTimeStamp' => $request->input('requestTimeStamp'),
-                'channel' => $request->input('channel'),
-                'operation' => $request->input('operation'),
-                'traceID' => $request->input('traceID'),
-                'msisdn' => $msisdn,
-                'cp_id' => $cp_id,
-                'correlator_id' => $correlator_id,
-                'description' => $description,
-                'delivery_status' => $delivery_status,
-                'type' => $type,
-                'campaign_id' => $campaign_id,
-                'json_result' => json_encode($request->all()),
-            ]);
+                'channel'          => $request->input('channel'),
+                'operation'        => $request->input('operation'),
+                'traceID'          => $request->input('traceID'),
+                'msisdn'           => $msisdn,
+                'cp_id'            => $cp_id,
+                'correlator_id'    => $correlator_id,
+                'description'      => $description,
+                'delivery_status'  => $delivery_status,
+                'type'             => $type,
+                'campaign_id'      => $campaign_id,
+                'json_result'      => json_encode($request->all()),
+            ]
+        );
     }
 }

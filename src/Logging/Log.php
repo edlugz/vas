@@ -32,8 +32,9 @@ class Log
      *
      * @param $options
      *
-     * @return array
      * @throws Exception
+     *
+     * @return array
      */
     public static function enable($options): array
     {
