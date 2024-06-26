@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class VASServiceProvider extends ServiceProvider
 {
-	
     /**
      * Perform post-registration booting of services.
      *
